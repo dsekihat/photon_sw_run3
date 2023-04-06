@@ -1,0 +1,6 @@
+*.eps
+*.pdf
+*.png
+*.root
+__pycache__/*
+
