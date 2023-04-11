@@ -1,0 +1,160 @@
+{
+    "internal-dpl-clock": "",
+    "internal-dpl-aod-reader": {
+        "time-limit": "0",
+        "orbit-offset-enumeration": "0",
+        "orbit-multiplier-enumeration": "0",
+        "start-value-enumeration": "0",
+        "end-value-enumeration": "-1",
+        "step-value-enumeration": "1",
+        "aod-file": "emAO2D.root",
+        "aod-reader-json": "reader_photon_table.json"
+    },
+    "label-unique-v0": "",
+    "pcm-qc": {
+        "cfgPCMCuts": "analysis,qc,nocut,wwire",
+        "processQC": "true",
+        "processDummy": "false"
+    },
+    "pcm-qc-mc": {
+        "cfgPCMCuts": "analysis,qc,nocut,wwire,analysis_wo_mee",
+        "processQCMC": "true",
+        "processGen": "true",
+        "processDummy": "false"
+    },
+    "pi0eta-to-gammagamma": {
+        "cfgPCMCuts": "analysis,qc,nocut,wwire,analysis_wo_mee",
+        "cfgPHOSCuts": "test02,test03",
+        "useRotation": "false",
+        "minOpenAngle": "0.0201999992",
+        "fConfigEMCCuts": "standard,custom",
+        "EMC_minTime": "-20",
+        "EMC_maxTime": "25",
+        "EMC_minM02": "0.100000001",
+        "EMC_maxM02": "0.699999988",
+        "EMC_minE": "0.699999988",
+        "EMC_minNCell": "1",
+        "EMC_TM_Eta": {
+            "values": [
+                "0.01",
+                "4.07",
+                "-2.5"
+            ]
+        },
+        "EMC_TM_Phi": {
+            "values": [
+                "0.015",
+                "3.65",
+                "2.0"
+            ]
+        },
+        "EMC_Eoverp": "1.75",
+        "EMC_UseExoticCut": "true",
+        "ndepth": "10",
+        "ConfVtxBins": {
+            "values": [
+                "0",
+                "-10",
+                "-8",
+                "-6",
+                "-4",
+                "-2",
+                "0",
+                "2",
+                "4",
+                "6",
+                "8",
+                "10"
+            ]
+        },
+        "processPCMPCM": "true",
+        "processPHOSPHOS": "false",
+        "processEMCEMC": "false",
+        "processPCMPHOS": "false",
+        "processPCMEMC": "false",
+        "processPHOSEMC": "false",
+        "processDummy": "false"
+    },
+    "pi0eta-to-gammagamma-mc": {
+        "maxYgen": "0.9",
+        "processPCMPCM": "true",
+        "processGen": "true",
+        "processDummy": "false"
+    },
+    "tagging-pi0": {
+        "cfgPCMCuts": "analysis,qc,nocut,analysis_wo_mee,wwire",
+        "cfgPHOSCuts": "test02,test03,test05",
+        "useRotation": "false",
+        "minOpenAngle": "0.0201999992",
+        "fConfigEMCCuts": "custom,standard",
+        "EMC_minTime": "-20",
+        "EMC_maxTime": "25",
+        "EMC_minM02": "0.100000001",
+        "EMC_maxM02": "0.699999988",
+        "EMC_minE": "0.699999988",
+        "EMC_minNCell": "1",
+        "EMC_TM_Eta": {
+            "values": [
+                "0.00999999978",
+                "4.07000017",
+                "-2.5"
+            ]
+        },
+        "EMC_TM_Phi": {
+            "values": [
+                "0.0149999997",
+                "3.6500001",
+                "-2"
+            ]
+        },
+        "EMC_Eoverp": "1.75",
+        "EMC_UseExoticCut": "true",
+        "ndepth": "10",
+        "ConfVtxBins": {
+            "values": [
+                "0",
+                "-10",
+                "-8",
+                "-6",
+                "-4",
+                "-2",
+                "0",
+                "2",
+                "4",
+                "6",
+                "8",
+                "10"
+            ]
+        },
+        "processPCMPHOS": "true",
+        "processPCMEMC": "false",
+        "processDummy": "false"
+    },
+    "photon-hbt": {
+        "cfgPCMCuts": "analysis,analysis_wo_mee,qc,nocut",
+        "cfgPHOSCuts": "test02,test03,test05",
+        "ndepth": "100",
+        "ConfVtxBins": {
+            "values": [
+                "0",
+                "-10",
+                "-8",
+                "-6",
+                "-4",
+                "-2",
+                "0",
+                "2",
+                "4",
+                "6",
+                "8",
+                "10"
+            ]
+        },
+        "processPCMPCM": "true",
+        "processPHOSPHOS": "true",
+        "processPCMPHOS": "true",
+        "processDummy": "false"
+    },
+    "internal-dpl-injected-dummy-sink": "",
+    "internal-dpl-aod-global-analysis-file-sink": ""
+}
