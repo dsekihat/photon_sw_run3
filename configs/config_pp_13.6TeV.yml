@@ -1,13 +1,25 @@
 common:
     system : "pp"
     energy : 13.6 #center-of-mass energy in TeV
-    period : "LHC22q"
+    period : "LHC22f"
     do_ptspectrum: True
     ptee_bin: [0.4,0.5,0.6,0.7,0.8, 0.9,1,1.2, 1.4, 1.6, 1.8,2,2.5,3,3.5,4,4.5,5,6,8,10] #in GeV
 data:
-    cutnames:
-    - "cutname0_data"
-    - "cutname1_data"
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "analysis_analysis"
+          - "analysis_wo_mee_analysis_wo_mee"
+          - "qc_qc"
+          - "nocut_nocut"
+        - name: "PHOSPHOS"
+          cutnames:
+          - "test03_test03"
+          - "test05_test05"
+        - name: "PCMPHOS"
+          cutnames:
+          - "analysis_test03"
+          - "qc_test03"
 mc:
     cutnames:
     - "cutname0_mc"

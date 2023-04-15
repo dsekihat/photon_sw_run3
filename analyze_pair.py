@@ -9,21 +9,31 @@ from ROOT import kWhite, kBlack, kRed, kGreen, kBlue, kYellow, kOrange
 from histo_manager import slice_histogram, rebin_histogram, get_bkg_subtracted, get_ratio
 
 #_________________________________________________________________________________________
-def analyze_ptspectrum(rootfile, cutname, arr_pt):
+def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
     print(sys._getframe().f_code.co_name);
     outlist = TList();
     outlist.SetName(cutname);
     print(arr_pt);
     npt = len(arr_pt);
 
-    list_main = rootfile.Get("pi0eta-to-gammagamma");
-    list_cut = list_main.Get(cutname);
-    print(list_main);
-    print(list_cut);
+    dir_main = rootfile.Get("pi0eta-to-gammagamma");
+    list_pair = dir_main.Get("Pair");
+    list_ev   = dir_main.Get("Event");
 
-    h1ev   = list_cut.Get("hCollisionCounter");
-    h2same = list_cut.Get("h2MggPt_Same");
-    h2mix  = list_cut.Get("h2MggPt_Mixed");
+    list_pair.Print();
+    list_ev  .Print();
+    
+    list_pair_subsystem = list_pair.FindObject(ssname);
+    list_ev_subsystem   = list_ev.FindObject(ssname);
+    list_pair_subsystem.Print();
+    list_ev_subsystem.Print();
+
+    list_cut = list_pair_subsystem.FindObject(cutname);
+    list_cut.Print();
+
+    h1ev   = list_ev_subsystem.FindObject("hCollisionCounter");
+    h2same = list_cut.FindObject("hMggPt_Same");
+    h2mix  = list_cut.FindObject("hMggPt_Mixed");
     h2same.Sumw2();
     h2mix .Sumw2();
     h2same.SetDirectory(0);
@@ -76,7 +86,7 @@ def analyze_ptspectrum(rootfile, cutname, arr_pt):
 
         f1ratio = TF1("f1ratio_pt{0}".format(i),"crystalball(0) + pol1(5)",0,1); #height, mu, sigma, alpha, n
         f1ratio.SetNpx(1000);
-        print(f1ratio.GetExpFormula(""));
+        #print(f1ratio.GetExpFormula(""));
 
         bin135 = h1ratio.FindBin(0.135);
         bin200 = h1ratio.FindBin(0.2);
