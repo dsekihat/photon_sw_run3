@@ -5,6 +5,7 @@ import numpy as np
 import ctypes
 import yaml
 import ROOT
+ROOT.gROOT.SetBatch(True);
 from ROOT import TFile, THashList
 from analyze_pair import analyze_ptspectrum
 

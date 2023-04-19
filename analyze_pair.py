@@ -79,6 +79,10 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
         h1same.SetDirectory(0);
         h1mix .SetDirectory(0);
 
+        npair_same = h1same.GetEntries();
+        npair_mix  = h1mix.GetEntries();
+        h1mix.Scale(npair_same/npair_mix);
+
         h1ratio = get_ratio(h1same, h1mix);
         h1ratio.SetName("h1mgg_ratio_pt{0}".format(i));
         h1ratio.SetTitle("m_{{#gamma#gamma}}^{{ratio}}, {0:2.1f} < p_{{T,#gamma#gamma}} < {1:2.1f} GeV/c".format(pt1, pt2));
@@ -101,7 +105,7 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
         f1ratio.SetParameter(6,-0.1);
         f1ratio.SetParLimits(0,1e-3,10);
         f1ratio.SetParLimits(1,0.12, 0.16);
-        f1ratio.SetParLimits(2,0.001, 0.02);
+        f1ratio.SetParLimits(2,0.003, 0.02);
         f1ratio.FixParameter(3,0.6);
         #f1ratio.FixParameter(4,1e+10);
         #f1ratio.SetParLimits(3,0, 100);
@@ -136,7 +140,7 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
         f1sig.SetParameter(4,1);
         f1sig.SetParLimits(0,1,1e+7);
         f1sig.SetParLimits(1,0.12, 0.16);
-        f1sig.SetParLimits(2,0.001, 0.02);
+        f1sig.SetParLimits(2,0.003, 0.02);
         f1sig.FixParameter(3,0.6);
         f1sig.SetParLimits(4,0, 100);
         h1sig.Fit(f1sig,"SME","",0.04, 0.24);

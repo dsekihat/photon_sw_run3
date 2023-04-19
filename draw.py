@@ -226,6 +226,6 @@ def draw_peak_sigma_pi0():
 #_____________________________________________________________________
 #_____________________________________________________________________
 if __name__ == "__main__":
-    #draw_raw_yield_pi0();
+    draw_raw_yield_pi0();
     #draw_peak_mean_pi0();
-    draw_peak_sigma_pi0();
+    #draw_peak_sigma_pi0();
