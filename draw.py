@@ -11,11 +11,83 @@ gStyle.SetOptStat(0);
 gStyle.SetOptTitle(0);
 
 #_____________________________________________________________________
-def draw_raw_yield_pi0(subsystem, cutname):
+def draw_xy(filename, subsystem, period, cutname, suffix):
+    rootfile = TFile.Open(filename,"READ");
+    rootdir = rootfile.Get("pcm-qc");
+    rootdir.ls();
+    list_v0  = rootdir.Get("V0");
+    list_v0.Print();
+    list_cut = list_v0.FindObject(cutname);
 
-    rootfile_loose   = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22f_V0withLooseTrack.root","READ");
-    rootfile_tpconly = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22f_V0withTPConlyTrack.root","READ");
-    rootfile_lkb     = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22f_V0withLKB.root","READ");
+    h2 = list_cut.FindObject("hGammaRxy_recalc");
+    ROOT.SetOwnership(h2, False);
+    h2.SetDirectory(0);
+    h2.SetContour(100);
+ 
+    gStyle.SetPalette(55);
+    c1 = TCanvas("c0","c0",0,0,800,800);
+    c1.SetTicks(1,1);
+    c1.SetLogz(1);
+    c1.SetMargin(0.12,0.12,0.1,0.05);
+
+    frame1 = c1.DrawFrame(-100,-100,100,100);
+    frame1.GetXaxis().SetTitle("conversion point X (cm)");
+    frame1.GetYaxis().SetTitle("conversion point Y (cm)");
+    frame1.GetXaxis().SetTitleSize(0.035);
+    frame1.GetYaxis().SetTitleSize(0.035);
+    frame1.GetXaxis().SetTitleOffset(1.2);
+    frame1.GetYaxis().SetTitleOffset(1.5);
+    frame1.GetXaxis().SetLabelSize(0.035);
+    frame1.GetYaxis().SetLabelSize(0.035);
+    frame1.GetXaxis().SetLabelOffset(0.01);
+    frame1.GetYaxis().SetLabelOffset(0.01);
+    frame1.GetXaxis().SetMoreLogLabels(True);
+    frame1.GetYaxis().SetMaxDigits(3);
+
+    h2.Draw("colz, same");
+
+    #leg = TLegend(0.6,0.7,0.8,0.9);
+    #leg.SetBorderSize(0);
+    #leg.SetFillColor(kWhite);
+    #leg.SetTextSize(0.035);
+    #leg.SetHeader("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    #leg.AddEntry(h1same , "same","LP");
+    #leg.AddEntry(h1bkg  , "bkg (mixed event)","LP");
+    #leg.AddEntry(h1sig  , "signal","LP");
+    #leg.Draw("");
+    #ROOT.SetOwnership(leg,False);
+
+    #txt = TPaveText(0.15,0.7,0.4,0.9,"NDC");
+    #txt.SetFillColor(kWhite);
+    #txt.SetFillStyle(0);
+    #txt.SetBorderSize(0);
+    #txt.SetTextAlign(12);#middle,left
+    #txt.SetTextFont(42);#helvetica
+    #txt.SetTextSize(0.035);
+    #txt.AddText("pp at #sqrt{#it{s}} = 13.6 TeV");
+    #txt.AddText("{0} pass3".format(period));
+    ##txt.AddText("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    #txt.AddText(ptstr[25:]);
+    #txt.AddText(suffix);
+    #txt.Draw();
+    #ROOT.SetOwnership(txt,False);
+
+
+    date = datetime.date.today().strftime("%Y%m%d");
+    c1.Modified();
+    c1.Update();
+    ROOT.SetOwnership(c1,False);
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_rxy_{2}_{3}_{4}.eps".format(date, subsystem, period, cutname, suffix));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_rxy_{2}_{3}_{4}.pdf".format(date, subsystem, period, cutname, suffix));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_rxy_{2}_{3}_{4}.png".format(date, subsystem, period, cutname, suffix));
+
+    rootfile.Close();
+
+#_____________________________________________________________________
+def draw_raw_yield_pi0(subsystem, period, cutname):
+    rootfile_loose   = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLooseTrack.root".format(period),"READ");
+    rootfile_tpconly = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withTPConlyTrack.root".format(period),"READ");
+    rootfile_lkb     = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLKB.root".format(period),"READ");
     rootfile_run2    = TFile.Open("data_PCMResultsFullCorrection_PP.root","READ");
 
     list_pcm_pcm_loose   = rootfile_loose  .Get(subsystem);
@@ -45,7 +117,7 @@ def draw_raw_yield_pi0(subsystem, cutname):
     c1.SetLogy(1);
     c1.SetTicks(1,1);
     c1.SetMargin(0.15,0.02,0.1,0.02);
-    frame1 = c1.DrawFrame(0.4,1e-8,20,1e-1);
+    frame1 = c1.DrawFrame(0.4,1e-8,20,1e-2);
     frame1.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})");
     frame1.GetYaxis().SetTitle("#frac{1}{#it{N}_{ev}} #frac{d#it{N}}{d#it{p}_{T}} (GeV/#it{c})^{-1}");
     frame1.GetXaxis().SetTitleSize(0.035);
@@ -74,9 +146,9 @@ def draw_raw_yield_pi0(subsystem, cutname):
     leg.SetTextSize(0.03);
     leg.SetHeader("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
     leg.AddEntry(h1_pcm_pcm_run2   , "pp at #sqrt{#it{s}} = 13 TeV","LP");
-    leg.AddEntry(h1_pcm_pcm_loose  , "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22f pass3, Loose tracks","LP");
-    leg.AddEntry(h1_pcm_pcm_tpconly, "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22f pass3, TPConly tracks","LP");
-    leg.AddEntry(h1_pcm_pcm_lkb    , "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22f pass3, LK builder","LP");
+    leg.AddEntry(h1_pcm_pcm_loose  , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, Any tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_tpconly, "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, TPConly tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_lkb    , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, LK builder".format(period),"LP");
     leg.Draw("");
     ROOT.SetOwnership(leg,False);
 
@@ -84,9 +156,9 @@ def draw_raw_yield_pi0(subsystem, cutname):
     c1.Modified();
     c1.Update();
     ROOT.SetOwnership(c1,False);
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22f_pass3_pi0_raw_yield_{1}_{2}.eps".format(date, subsystem, cutname));
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22f_pass3_pi0_raw_yield_{1}_{2}.pdf".format(date, subsystem, cutname));
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22f_pass3_pi0_raw_yield_{1}_{2}.png".format(date, subsystem, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_raw_yield_{2}_{3}.eps".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_raw_yield_{2}_{3}.pdf".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_raw_yield_{2}_{3}.png".format(date, subsystem, period, cutname));
 
     rootfile_loose.Close();
     rootfile_tpconly.Close();
@@ -95,34 +167,128 @@ def draw_raw_yield_pi0(subsystem, cutname):
 
 #_____________________________________________________________________
 #_____________________________________________________________________
-def draw_peak_mean_pi0():
+def draw_mgg_pi0(filename, subsystem, period, cutname, pt_id=3, suffix=""):
+    rootfile = TFile.Open(filename,"READ");
+    list_ss  = rootfile.Get(subsystem);
+    list_cut = list_ss.FindObject(cutname);
 
-    rootfile_myv0 = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0_with_dsekihat.root","READ");
-    rootfile_lkb  = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0_with_LKB.root","READ");
-    rootfile_run2  = TFile.Open("data_PCMResultsFullCorrection_PP.root","READ");
+    h1same = list_cut.FindObject("h1mgg_same_pt{0}".format(pt_id));
+    h1bkg  = list_cut.FindObject("h1mgg_bkg_pt{0}".format(pt_id));
+    h1sig  = list_cut.FindObject("h1mgg_sig_pt{0}".format(pt_id));
+    h1same.SetDirectory(0);
+    h1bkg.SetDirectory(0);
+    h1sig.SetDirectory(0);
+    ROOT.SetOwnership(h1same, False);
+    ROOT.SetOwnership(h1bkg, False);
+    ROOT.SetOwnership(h1sig, False);
 
-    list_pcm_pcm_myv0 = rootfile_myv0.Get("PCMPCM");
-    list_pcm_pcm_lkb  = rootfile_lkb .Get("PCMPCM");
-    dir_pcm_pcm_run2  = rootfile_run2.Get("Pi013TeV");
-    dir_pcm_pcm_run2.ls();
+    ptstr = h1same.GetTitle();
+    #print(ptstr[25:]);
+ 
+    c1 = TCanvas("c0","c0",0,0,800,800);
+    c1.SetTicks(1,1);
+    c1.SetMargin(0.12,0.05,0.1,0.05);
 
-    h1_pcm_pcm_myv0 = list_pcm_pcm_myv0.FindObject("h1mean");
-    h1_pcm_pcm_lkb  = list_pcm_pcm_lkb .FindObject("h1mean");
-    h1_pcm_pcm_run2 = dir_pcm_pcm_run2 .Get("Pi0_Mass_data_INT7");
-    h1_pcm_pcm_myv0.SetDirectory(0);
+    ymax = h1same.GetMaximum() * 1.4;
+    ymin = h1same.GetMaximum() * -0.05;
+    mw = h1same.GetBinWidth(1);
+
+    frame1 = c1.DrawFrame(0.04,ymin,0.24,ymax);
+    frame1.GetXaxis().SetTitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+    frame1.GetYaxis().SetTitle("Counts / {0:d} MeV/#it{{c}}^{{2}}".format(int(mw * 1e+3)));
+    frame1.GetXaxis().SetTitleSize(0.035);
+    frame1.GetYaxis().SetTitleSize(0.035);
+    frame1.GetXaxis().SetTitleOffset(1.2);
+    frame1.GetYaxis().SetTitleOffset(1.5);
+    frame1.GetXaxis().SetLabelSize(0.035);
+    frame1.GetYaxis().SetLabelSize(0.035);
+    frame1.GetXaxis().SetLabelOffset(0.01);
+    frame1.GetYaxis().SetLabelOffset(0.01);
+    frame1.GetXaxis().SetMoreLogLabels(True);
+    frame1.GetYaxis().SetMaxDigits(3);
+
+    make_common_style(h1same  , 20, 1.0, kBlack, 1, 0);
+    make_common_style(h1bkg   , 20, 1.0, kBlue+1, 1, 0);
+    make_common_style(h1sig   , 20, 1.0, kRed+1, 1, 0);
+
+    h1same.Draw("E0same");
+    h1bkg. Draw("E0same");
+    h1sig. Draw("E0same");
+
+    leg = TLegend(0.6,0.7,0.8,0.9);
+    leg.SetBorderSize(0);
+    leg.SetFillColor(kWhite);
+    leg.SetTextSize(0.035);
+    leg.SetHeader("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    leg.AddEntry(h1same , "same","LP");
+    leg.AddEntry(h1bkg  , "bkg (mixed event)","LP");
+    leg.AddEntry(h1sig  , "signal","LP");
+    leg.Draw("");
+    ROOT.SetOwnership(leg,False);
+
+    txt = TPaveText(0.15,0.7,0.4,0.9,"NDC");
+    txt.SetFillColor(kWhite);
+    txt.SetFillStyle(0);
+    txt.SetBorderSize(0);
+    txt.SetTextAlign(12);#middle,left
+    txt.SetTextFont(42);#helvetica
+    txt.SetTextSize(0.035);
+    txt.AddText("pp at #sqrt{#it{s}} = 13.6 TeV");
+    txt.AddText("{0} pass3".format(period));
+    #txt.AddText("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    txt.AddText(ptstr[25:]);
+    txt.AddText(suffix);
+    txt.Draw();
+    ROOT.SetOwnership(txt,False);
+
+
+    date = datetime.date.today().strftime("%Y%m%d");
+    c1.Modified();
+    c1.Update();
+    ROOT.SetOwnership(c1,False);
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_mgg_pi0_{2}_{3}_Pt{4}{5}.eps".format(date, subsystem, period, cutname, pt_id, suffix));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_mgg_pi0_{2}_{3}_Pt{4}{5}.pdf".format(date, subsystem, period, cutname, pt_id, suffix));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_mgg_pi0_{2}_{3}_Pt{4}{5}.png".format(date, subsystem, period, cutname, pt_id, suffix));
+
+    rootfile.Close();
+
+#_____________________________________________________________________
+def draw_raw_yield_pi0(subsystem, period, cutname):
+    rootfile_loose   = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLooseTrack.root".format(period),"READ");
+    rootfile_tpconly = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withTPConlyTrack.root".format(period),"READ");
+    rootfile_lkb     = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLKB.root".format(period),"READ");
+    rootfile_run2    = TFile.Open("data_PCMResultsFullCorrection_PP.root","READ");
+
+    list_pcm_pcm_loose   = rootfile_loose  .Get(subsystem);
+    list_pcm_pcm_tpconly = rootfile_tpconly.Get(subsystem);
+    list_pcm_pcm_lkb     = rootfile_lkb    .Get(subsystem);
+    dir_pcm_pcm_run2     = rootfile_run2   .Get("Pi013TeV");
+
+    list_pcm_pcm_loose_cut   = list_pcm_pcm_loose  .FindObject(cutname);
+    list_pcm_pcm_tpconly_cut = list_pcm_pcm_tpconly.FindObject(cutname);
+    list_pcm_pcm_lkb_cut     = list_pcm_pcm_lkb    .FindObject(cutname);
+
+    h1_pcm_pcm_loose   = list_pcm_pcm_loose_cut.FindObject("h1yield");
+    h1_pcm_pcm_tpconly = list_pcm_pcm_tpconly_cut.FindObject("h1yield");
+    h1_pcm_pcm_lkb     = list_pcm_pcm_lkb_cut.FindObject("h1yield");
+    h1_pcm_pcm_run2    = dir_pcm_pcm_run2 .Get("RAWYieldPerEventsPi0_INT7");
+    h1_pcm_pcm_loose.SetDirectory(0);
+    h1_pcm_pcm_tpconly.SetDirectory(0);
     h1_pcm_pcm_lkb .SetDirectory(0);
     h1_pcm_pcm_run2.SetDirectory(0);
-    ROOT.SetOwnership(h1_pcm_pcm_myv0, False);
+    ROOT.SetOwnership(h1_pcm_pcm_loose, False);
+    ROOT.SetOwnership(h1_pcm_pcm_tpconly, False);
     ROOT.SetOwnership(h1_pcm_pcm_lkb , False);
     ROOT.SetOwnership(h1_pcm_pcm_run2, False);
  
     c1 = TCanvas("c0","c0",0,0,800,800);
     c1.SetLogx(1);
+    c1.SetLogy(1);
     c1.SetTicks(1,1);
     c1.SetMargin(0.15,0.02,0.1,0.02);
-    frame1 = c1.DrawFrame(0.4,0.12,20,0.15);
+    frame1 = c1.DrawFrame(0.4,1e-8,20,1e-2);
     frame1.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})");
-    frame1.GetYaxis().SetTitle("peak position (GeV/#it{c}^{2})");
+    frame1.GetYaxis().SetTitle("#frac{1}{#it{N}_{ev}} #frac{d#it{N}}{d#it{p}_{T}} (GeV/#it{c})^{-1}");
     frame1.GetXaxis().SetTitleSize(0.035);
     frame1.GetYaxis().SetTitleSize(0.035);
     frame1.GetXaxis().SetTitleOffset(1.3);
@@ -133,22 +299,25 @@ def draw_peak_mean_pi0():
     frame1.GetYaxis().SetLabelOffset(0.01);
     frame1.GetXaxis().SetMoreLogLabels(True);
 
-    make_common_style(h1_pcm_pcm_myv0, 20, 1.0, kRed+1, 1, 0);
-    make_common_style(h1_pcm_pcm_lkb , 20, 1.0, kBlue+1, 1, 0);
-    make_common_style(h1_pcm_pcm_run2, 20, 1.0, kBlack, 1, 0);
+    make_common_style(h1_pcm_pcm_run2   , 20, 1.0, kBlack, 1, 0);
+    make_common_style(h1_pcm_pcm_lkb    , 20, 1.0, kGreen+2, 1, 0);
+    make_common_style(h1_pcm_pcm_tpconly, 20, 1.0, kBlue+1, 1, 0);
+    make_common_style(h1_pcm_pcm_loose  , 20, 1.0, kRed+1, 1, 0);
 
     h1_pcm_pcm_run2.Draw("E0same");
     h1_pcm_pcm_lkb .Draw("E0same");
-    h1_pcm_pcm_myv0.Draw("E0same");
+    h1_pcm_pcm_tpconly.Draw("E0same");
+    h1_pcm_pcm_loose.Draw("E0same");
 
     leg = TLegend(0.2,0.8,0.4,0.95);
     leg.SetBorderSize(0);
     leg.SetFillColor(kWhite);
     leg.SetTextSize(0.03);
-    leg.SetHeader("#pi^{0} #rightarrow #gamma#gamma , PCM-PCM");
-    leg.AddEntry(h1_pcm_pcm_run2, "pp at #sqrt{#it{s}} = 13 TeV","LP");
-    leg.AddEntry(h1_pcm_pcm_myv0, "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22q pass3, Daiki's V0 finder","LP");
-    leg.AddEntry(h1_pcm_pcm_lkb, "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22q pass3, LK builder","LP");
+    leg.SetHeader("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    leg.AddEntry(h1_pcm_pcm_run2   , "pp at #sqrt{#it{s}} = 13 TeV","LP");
+    leg.AddEntry(h1_pcm_pcm_loose  , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, Any tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_tpconly, "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, TPConly tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_lkb    , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, LK builder".format(period),"LP");
     leg.Draw("");
     ROOT.SetOwnership(leg,False);
 
@@ -156,34 +325,43 @@ def draw_peak_mean_pi0():
     c1.Modified();
     c1.Update();
     ROOT.SetOwnership(c1,False);
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22q_pass3_pi0_peak_mean.eps".format(date));
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22q_pass3_pi0_peak_mean.pdf".format(date));
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22q_pass3_pi0_peak_mean.png".format(date));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_raw_yield_{2}_{3}.eps".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_raw_yield_{2}_{3}.pdf".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_raw_yield_{2}_{3}.png".format(date, subsystem, period, cutname));
 
-    rootfile_myv0.Close();
+    rootfile_loose.Close();
+    rootfile_tpconly.Close();
     rootfile_lkb .Close();
     rootfile_run2.Close();
 
 #_____________________________________________________________________
 #_____________________________________________________________________
-def draw_peak_sigma_pi0():
+def draw_peak_mean_pi0(subsystem, period, cutname):
 
-    rootfile_myv0 = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0_with_dsekihat.root","READ");
-    rootfile_lkb  = TFile.Open("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0_with_LKB.root","READ");
-    rootfile_run2  = TFile.Open("data_PCMResultsFullCorrection_PP.root","READ");
+    rootfile_loose   = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLooseTrack.root".format(period),"READ");
+    rootfile_tpconly = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withTPConlyTrack.root".format(period),"READ");
+    rootfile_lkb     = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLKB.root".format(period),"READ");
+    rootfile_run2    = TFile.Open("data_PCMResultsFullCorrection_PP.root","READ");
 
-    list_pcm_pcm_myv0 = rootfile_myv0.Get("PCMPCM");
-    list_pcm_pcm_lkb  = rootfile_lkb .Get("PCMPCM");
-    dir_pcm_pcm_run2  = rootfile_run2.Get("Pi013TeV");
-    dir_pcm_pcm_run2.ls();
+    list_pcm_pcm_loose   = rootfile_loose  .Get(subsystem);
+    list_pcm_pcm_tpconly = rootfile_tpconly.Get(subsystem);
+    list_pcm_pcm_lkb     = rootfile_lkb    .Get(subsystem);
+    dir_pcm_pcm_run2     = rootfile_run2   .Get("Pi013TeV");
 
-    h1_pcm_pcm_myv0 = list_pcm_pcm_myv0.FindObject("h1sigma");
-    h1_pcm_pcm_lkb  = list_pcm_pcm_lkb .FindObject("h1sigma");
-    h1_pcm_pcm_run2 = dir_pcm_pcm_run2 .Get("Pi0_Width_data_INT7");
-    h1_pcm_pcm_myv0.SetDirectory(0);
+    list_pcm_pcm_loose_cut   = list_pcm_pcm_loose  .FindObject(cutname);
+    list_pcm_pcm_tpconly_cut = list_pcm_pcm_tpconly.FindObject(cutname);
+    list_pcm_pcm_lkb_cut     = list_pcm_pcm_lkb    .FindObject(cutname);
+
+    h1_pcm_pcm_loose   = list_pcm_pcm_loose_cut.FindObject("h1mean");
+    h1_pcm_pcm_tpconly = list_pcm_pcm_tpconly_cut.FindObject("h1mean");
+    h1_pcm_pcm_lkb     = list_pcm_pcm_lkb_cut.FindObject("h1mean");
+    h1_pcm_pcm_run2    = dir_pcm_pcm_run2 .Get("Pi0_Mass_data_INT7");
+    h1_pcm_pcm_loose.SetDirectory(0);
+    h1_pcm_pcm_tpconly.SetDirectory(0);
     h1_pcm_pcm_lkb .SetDirectory(0);
     h1_pcm_pcm_run2.SetDirectory(0);
-    ROOT.SetOwnership(h1_pcm_pcm_myv0, False);
+    ROOT.SetOwnership(h1_pcm_pcm_loose, False);
+    ROOT.SetOwnership(h1_pcm_pcm_tpconly, False);
     ROOT.SetOwnership(h1_pcm_pcm_lkb , False);
     ROOT.SetOwnership(h1_pcm_pcm_run2, False);
  
@@ -191,7 +369,89 @@ def draw_peak_sigma_pi0():
     c1.SetLogx(1);
     c1.SetTicks(1,1);
     c1.SetMargin(0.15,0.02,0.1,0.02);
-    frame1 = c1.DrawFrame(0.4,0.,20,0.02);
+    frame1 = c1.DrawFrame(0.4,0.12,20, 0.15);
+    frame1.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})");
+    frame1.GetYaxis().SetTitle("peak mean (GeV/#it{c}^{2})");
+    frame1.GetXaxis().SetTitleSize(0.035);
+    frame1.GetYaxis().SetTitleSize(0.035);
+    frame1.GetXaxis().SetTitleOffset(1.3);
+    frame1.GetYaxis().SetTitleOffset(2.0);
+    frame1.GetXaxis().SetLabelSize(0.035);
+    frame1.GetYaxis().SetLabelSize(0.035);
+    frame1.GetXaxis().SetLabelOffset(0.01);
+    frame1.GetYaxis().SetLabelOffset(0.01);
+    frame1.GetXaxis().SetMoreLogLabels(True);
+
+    make_common_style(h1_pcm_pcm_run2   , 20, 1.0, kBlack, 1, 0);
+    make_common_style(h1_pcm_pcm_lkb    , 20, 1.0, kGreen+2, 1, 0);
+    make_common_style(h1_pcm_pcm_tpconly, 20, 1.0, kBlue+1, 1, 0);
+    make_common_style(h1_pcm_pcm_loose  , 20, 1.0, kRed+1, 1, 0);
+
+    h1_pcm_pcm_run2.Draw("E0same");
+    h1_pcm_pcm_lkb .Draw("E0same");
+    h1_pcm_pcm_tpconly.Draw("E0same");
+    h1_pcm_pcm_loose.Draw("E0same");
+
+    leg = TLegend(0.2,0.8,0.4,0.95);
+    leg.SetBorderSize(0);
+    leg.SetFillColor(kWhite);
+    leg.SetTextSize(0.03);
+    leg.SetHeader("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    leg.AddEntry(h1_pcm_pcm_run2   , "pp at #sqrt{#it{s}} = 13 TeV","LP");
+    leg.AddEntry(h1_pcm_pcm_loose  , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, Any tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_tpconly, "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, TPConly tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_lkb    , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, LK builder".format(period),"LP");
+    leg.Draw("");
+    ROOT.SetOwnership(leg,False);
+
+    date = datetime.date.today().strftime("%Y%m%d");
+    c1.Modified();
+    c1.Update();
+    ROOT.SetOwnership(c1,False);
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_peak_mean_{2}_{3}.eps".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_peak_mean_{2}_{3}.pdf".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_peak_mean_{2}_{3}.png".format(date, subsystem, period, cutname));
+
+    rootfile_loose.Close();
+    rootfile_tpconly.Close();
+    rootfile_lkb .Close();
+    rootfile_run2.Close();
+
+#_____________________________________________________________________
+def draw_peak_sigma_pi0(subsystem, period, cutname):
+
+    rootfile_loose   = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLooseTrack.root".format(period),"READ");
+    rootfile_tpconly = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withTPConlyTrack.root".format(period),"READ");
+    rootfile_lkb     = TFile.Open("output_data_ptspectrum_pp_13.6TeV_{0}_V0withLKB.root".format(period),"READ");
+    rootfile_run2    = TFile.Open("data_PCMResultsFullCorrection_PP.root","READ");
+
+    list_pcm_pcm_loose   = rootfile_loose  .Get(subsystem);
+    list_pcm_pcm_tpconly = rootfile_tpconly.Get(subsystem);
+    list_pcm_pcm_lkb     = rootfile_lkb    .Get(subsystem);
+    dir_pcm_pcm_run2     = rootfile_run2   .Get("Pi013TeV");
+
+    list_pcm_pcm_loose_cut   = list_pcm_pcm_loose  .FindObject(cutname);
+    list_pcm_pcm_tpconly_cut = list_pcm_pcm_tpconly.FindObject(cutname);
+    list_pcm_pcm_lkb_cut     = list_pcm_pcm_lkb    .FindObject(cutname);
+
+    h1_pcm_pcm_loose   = list_pcm_pcm_loose_cut.FindObject("h1sigma");
+    h1_pcm_pcm_tpconly = list_pcm_pcm_tpconly_cut.FindObject("h1sigma");
+    h1_pcm_pcm_lkb     = list_pcm_pcm_lkb_cut.FindObject("h1sigma");
+    h1_pcm_pcm_run2    = dir_pcm_pcm_run2 .Get("Pi0_Width_data_INT7");
+    h1_pcm_pcm_loose.SetDirectory(0);
+    h1_pcm_pcm_tpconly.SetDirectory(0);
+    h1_pcm_pcm_lkb .SetDirectory(0);
+    h1_pcm_pcm_run2.SetDirectory(0);
+    ROOT.SetOwnership(h1_pcm_pcm_loose, False);
+    ROOT.SetOwnership(h1_pcm_pcm_tpconly, False);
+    ROOT.SetOwnership(h1_pcm_pcm_lkb , False);
+    ROOT.SetOwnership(h1_pcm_pcm_run2, False);
+ 
+    c1 = TCanvas("c0","c0",0,0,800,800);
+    c1.SetLogx(1);
+    c1.SetTicks(1,1);
+    c1.SetMargin(0.15,0.02,0.1,0.02);
+    frame1 = c1.DrawFrame(0.4,0.,20, 0.02);
     frame1.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})");
     frame1.GetYaxis().SetTitle("peak sigma (GeV/#it{c}^{2})");
     frame1.GetXaxis().SetTitleSize(0.035);
@@ -204,22 +464,25 @@ def draw_peak_sigma_pi0():
     frame1.GetYaxis().SetLabelOffset(0.01);
     frame1.GetXaxis().SetMoreLogLabels(True);
 
-    make_common_style(h1_pcm_pcm_myv0, 20, 1.0, kRed+1, 1, 0);
-    make_common_style(h1_pcm_pcm_lkb , 20, 1.0, kBlue+1, 1, 0);
-    make_common_style(h1_pcm_pcm_run2, 20, 1.0, kBlack, 1, 0);
+    make_common_style(h1_pcm_pcm_run2   , 20, 1.0, kBlack, 1, 0);
+    make_common_style(h1_pcm_pcm_lkb    , 20, 1.0, kGreen+2, 1, 0);
+    make_common_style(h1_pcm_pcm_tpconly, 20, 1.0, kBlue+1, 1, 0);
+    make_common_style(h1_pcm_pcm_loose  , 20, 1.0, kRed+1, 1, 0);
 
     h1_pcm_pcm_run2.Draw("E0same");
     h1_pcm_pcm_lkb .Draw("E0same");
-    h1_pcm_pcm_myv0.Draw("E0same");
+    h1_pcm_pcm_tpconly.Draw("E0same");
+    h1_pcm_pcm_loose.Draw("E0same");
 
     leg = TLegend(0.2,0.8,0.4,0.95);
     leg.SetBorderSize(0);
     leg.SetFillColor(kWhite);
     leg.SetTextSize(0.03);
-    leg.SetHeader("#pi^{0} #rightarrow #gamma#gamma , PCM-PCM");
-    leg.AddEntry(h1_pcm_pcm_run2, "pp at #sqrt{#it{s}} = 13 TeV","LP");
-    leg.AddEntry(h1_pcm_pcm_myv0, "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22q pass3, Daiki's V0 finder","LP");
-    leg.AddEntry(h1_pcm_pcm_lkb, "pp at #sqrt{#it{s}} = 13.6 TeV, LHC22q pass3, LK builder","LP");
+    leg.SetHeader("#pi^{{0}} #rightarrow #gamma#gamma , {0}".format(subsystem));
+    leg.AddEntry(h1_pcm_pcm_run2   , "pp at #sqrt{#it{s}} = 13 TeV","LP");
+    leg.AddEntry(h1_pcm_pcm_loose  , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, Any tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_tpconly, "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, TPConly tracks".format(period),"LP");
+    leg.AddEntry(h1_pcm_pcm_lkb    , "pp at #sqrt{{#it{{s}}}} = 13.6 TeV, {0} pass3, LK builder".format(period),"LP");
     leg.Draw("");
     ROOT.SetOwnership(leg,False);
 
@@ -227,18 +490,39 @@ def draw_peak_sigma_pi0():
     c1.Modified();
     c1.Update();
     ROOT.SetOwnership(c1,False);
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22q_pass3_pi0_peak_sigma.eps".format(date));
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22q_pass3_pi0_peak_sigma.pdf".format(date));
-    c1.SaveAs("{0}_pp_13.6TeV_LHC22q_pass3_pi0_peak_sigma.png".format(date));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_peak_sigma_{2}_{3}.eps".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_peak_sigma_{2}_{3}.pdf".format(date, subsystem, period, cutname));
+    c1.SaveAs("{0}_pp_13.6TeV_{1}_pass3_pi0_peak_sigma_{2}_{3}.png".format(date, subsystem, period, cutname));
 
-    rootfile_myv0.Close();
+    rootfile_loose.Close();
+    rootfile_tpconly.Close();
     rootfile_lkb .Close();
     rootfile_run2.Close();
 
 #_____________________________________________________________________
 #_____________________________________________________________________
 if __name__ == "__main__":
-    #draw_raw_yield_pi0("PCMPCM", "qc_qc");
-    draw_raw_yield_pi0("PCMPHOS", "qc_test03");
-    #draw_peak_mean_pi0();
-    #draw_peak_sigma_pi0();
+    #draw_raw_yield_pi0( "PCMPCM", "LHC22q", "analysis_wo_mee_analysis_wo_mee");
+    #draw_peak_mean_pi0( "PCMPCM", "LHC22q", "analysis_wo_mee_analysis_wo_mee");
+    #draw_peak_sigma_pi0("PCMPCM", "LHC22q", "analysis_wo_mee_analysis_wo_mee");
+    #draw_mgg_pi0("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0withLooseTrack.root", "PCMPCM", "LHC22q", "analysis_wo_mee_analysis_wo_mee", 3, "AnyTrack");
+    #draw_mgg_pi0("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0withTPConlyTrack.root", "PCMPCM", "LHC22q", "analysis_wo_mee_analysis_wo_mee", 3, "TPConlyTrack");
+    #draw_mgg_pi0("output_data_ptspectrum_pp_13.6TeV_LHC22q_V0withLKB.root", "PCMPCM", "LHC22q", "analysis_wo_mee_analysis_wo_mee", 1, "LKB");
+
+
+    #draw_raw_yield_pi0( "PCMPCM", "LHC22f", "analysis_wo_mee_analysis_wo_mee");
+    #draw_peak_mean_pi0( "PCMPCM", "LHC22f", "analysis_wo_mee_analysis_wo_mee");
+    #draw_peak_sigma_pi0("PCMPCM", "LHC22f", "analysis_wo_mee_analysis_wo_mee");
+    #draw_mgg_pi0("output_data_ptspectrum_pp_13.6TeV_LHC22f_V0withLooseTrack.root", "PCMPCM", "LHC22f", "analysis_wo_mee_analysis_wo_mee", 3, "AnyTrack");
+    #draw_mgg_pi0("output_data_ptspectrum_pp_13.6TeV_LHC22f_V0withTPConlyTrack.root", "PCMPCM", "LHC22f", "analysis_wo_mee_analysis_wo_mee", 3, "TPConlyTrack");
+    #draw_mgg_pi0("output_data_ptspectrum_pp_13.6TeV_LHC22f_V0withLKB.root", "PCMPCM", "LHC22f", "analysis_wo_mee_analysis_wo_mee", 1, "LKB");
+
+    draw_xy("AnalysisResults_HL_75289.root", "PCMPCM", "LHC22q", "analysis_wo_mee", "AnyTrack");
+    draw_xy("AnalysisResults_HL_75290.root", "PCMPCM", "LHC22q", "analysis_wo_mee", "LKB");
+    draw_xy("AnalysisResults_HL_75291.root", "PCMPCM", "LHC22q", "analysis_wo_mee", "TPConlyTrack");
+
+    #draw_raw_yield_pi0("PCMPCM", "LHC22q", "analysis_analysis");
+    #draw_raw_yield_pi0("PCMPCM", "LHC22q", "qc_qc");
+
+
+    #draw_raw_yield_pi0("PCMPHOS", "LHC22q", "qc_test03");

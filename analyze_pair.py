@@ -72,20 +72,23 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
 
         h1same = slice_histogram(h2same, pt1, pt2, "X", False);
         h1same.SetName("h1mgg_same_pt{0}".format(i));
-        h1same.SetTitle("m_{{#gamma#gamma}}^{{same}}, {0:2.1f} < p_{{T,#gamma#gamma}} < {1:2.1f} GeV/c".format(pt1, pt2));
+        h1same.SetTitle("m_{{#gamma#gamma}}^{{same}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
         h1mix  = slice_histogram(h2mix , pt1, pt2, "X", False);
-        h1mix.SetTitle("m_{{#gamma#gamma}}^{{mix}}, {0:2.1f} < p_{{T,#gamma#gamma}} < {1:2.1f} GeV/c".format(pt1, pt2));
+        h1mix.SetTitle("m_{{#gamma#gamma}}^{{mix}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
         h1mix.SetName("h1mgg_mix_pt{0}".format(i));
         h1same.SetDirectory(0);
         h1mix .SetDirectory(0);
 
         npair_same = h1same.GetEntries();
         npair_mix  = h1mix.GetEntries();
+        if npair_mix < 1e-6:
+            continue;
+
         h1mix.Scale(npair_same/npair_mix);
 
         h1ratio = get_ratio(h1same, h1mix);
         h1ratio.SetName("h1mgg_ratio_pt{0}".format(i));
-        h1ratio.SetTitle("m_{{#gamma#gamma}}^{{ratio}}, {0:2.1f} < p_{{T,#gamma#gamma}} < {1:2.1f} GeV/c".format(pt1, pt2));
+        h1ratio.SetTitle("m_{{#gamma#gamma}}^{{ratio}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
         h1ratio .SetDirectory(0);
 
         f1ratio = TF1("f1ratio_pt{0}".format(i),"crystalball(0) + pol1(5)",0,1); #height, mu, sigma, alpha, n
@@ -118,12 +121,12 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
             f1bkg.FixParameter(ip, f1ratio.GetParameter(ip + 5));
         h1bkg.Multiply(f1bkg);
         h1bkg.SetName("h1mgg_bkg_pt{0}".format(i));
-        h1bkg.SetTitle("m_{{#gamma#gamma}}^{{bkg}}, {0:2.1f} < p_{{T,#gamma#gamma}} < {1:2.1f} GeV/c".format(pt1, pt2));
+        h1bkg.SetTitle("m_{{#gamma#gamma}}^{{bkg}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
         h1bkg .SetDirectory(0);
 
         h1sig = get_bkg_subtracted(h1same, h1bkg);
         h1sig.SetName("h1mgg_sig_pt{0}".format(i));
-        h1sig.SetTitle("m_{{#gamma#gamma}}^{{sig}}, {0:2.1f} < p_{{T,#gamma#gamma}} < {1:2.1f} GeV/c".format(pt1, pt2));
+        h1sig.SetTitle("m_{{#gamma#gamma}}^{{sig}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
         h1sig .SetDirectory(0);
 
         f1sig = TF1("f1sig_pt{0}".format(i),"crystalball(0)",0,1);
