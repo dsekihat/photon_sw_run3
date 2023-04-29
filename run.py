@@ -6,8 +6,9 @@ import ctypes
 import yaml
 import ROOT
 ROOT.gROOT.SetBatch(True);
-from ROOT import TFile, THashList
-from analyze_pair import analyze_ptspectrum
+from ROOT import TFile, THashList, TF1
+#from analyze_pair import analyze_ptspectrum
+from pair_analyzer import PairAnalyzer
 
 parser = argparse.ArgumentParser('Example program');
 parser.add_argument("-i", "--input" , default="AnalysisResults.root", type=str, help="path to the root file you want to analyze", required=True)
@@ -22,19 +23,34 @@ with open(args.config, "r", encoding="utf-8") as config_yml:
 #_________________________________________________________________________________________
 def run(filename, config, ismc, suffix=""):
     print(sys._getframe().f_code.co_name);
-    arr_ptee = np.array(config["common"]["ptee_bin"],dtype=float);
-    print("pTee binning = ",arr_ptee);
+    arr_pt = np.array(config["common"]["pt_bin"],dtype=float);
+    print("pT binning = ",arr_pt);
     print("ismc = ",ismc);
     print("input = ",filename);
     rootfile = TFile.Open(filename,"READ");
+    meson = config["common"]["meson"];
+    #print(config);
 
-    print(config);
+    list_fit_sig = config["common"]["fit_sig"];
+    list_fit_bkg = config["common"]["fit_bkg"];
+
+    list_fit_min = config["common"]["fit_min"];
+    list_fit_max = config["common"]["fit_max"];
+    if len(list_fit_min) != len(list_fit_max):
+        return;
+
+    list_integral_min = config["common"]["integral_sigma_min"];
+    list_integral_max = config["common"]["integral_sigma_max"];
+    if len(list_integral_min) != len(list_integral_max):
+        return;
 
     nsys = len(config[args.type]['subsystems']);
     print(nsys); 
 
+    meson = config["common"]["meson"];
+
     if config["common"]["do_ptspectrum"] == True:
-        outname = "output_{0}_ptspectrum_{1}_{2}TeV_{3}{4}.root".format(args.type, config["common"]["system"], config["common"]["energy"], config["common"]["period"], suffix);
+        outname = "{0}_{1}_ptspectrum_{2}_{3}TeV_{4}{5}.root".format(meson, args.type, config["common"]["system"], config["common"]["energy"], config["common"]["period"], suffix);
         print("output file name = ",outname);
         outfile = TFile(outname,"RECREATE");
 
@@ -46,8 +62,13 @@ def run(filename, config, ismc, suffix=""):
                 outfile.WriteTObject(outlist);
                 outlist.Clear();
         else:
+            ana_pi0 = PairAnalyzer(meson, filename, "pi0eta-to-gammagamma");
+            ana_pi0.set_arr_pt(arr_pt);
             for isys in range(0,nsys):
                 ssname = config[args.type]['subsystems'][isys]['name']; #subsystem name
+                ana_pi0.set_subsystem(ssname);
+                ana_pi0.set_xtitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+                ana_pi0.set_ytitle("#it{p}_{T,#gamma#gamma} (GeV/#it{c}^{2})");
                 print("analyze subsystem", ssname);
                 cutnames = config[args.type]["subsystems"][isys]['cutnames']
                 print("cutnames", cutnames); 
@@ -56,15 +77,42 @@ def run(filename, config, ismc, suffix=""):
                 outlist_ss.SetName(ssname);
                 outlist_ss.SetOwner(True);
                 for ic in range(0,nc):
-                    outlist = analyze_ptspectrum(rootfile, ssname, cutnames[ic], arr_ptee);
-                    outlist.SetOwner(True);
-                    outlist_ss.Add(outlist);
+                    cutname = cutnames[ic];
+                    ana_pi0.set_cutname(cutname);
+                    outlist_cut = THashList();
+                    outlist_cut.SetName(cutname);
+                    outlist_cut.SetOwner(True);
+                    outlist_ss.Add(outlist_cut);
+                    for isig in list_fit_sig:
+                        for ibkg in list_fit_bkg:
+                            ana_pi0.set_fit_function(isig, ibkg);
+                            outlist_func = THashList();
+                            outlist_func.SetName(isig + "_" + ibkg);
+                            outlist_func.SetOwner(True);
+                            outlist_cut.Add(outlist_func);
+                            for ir in range(0, len(list_fit_min)):
+                                fit_min = list_fit_min[ir];
+                                fit_max = list_fit_max[ir];
+                                ana_pi0.set_fit_range(fit_min, fit_max);
+                                outlist_fit_range = THashList();
+                                outlist_fit_range.SetName("fit_{0:3.2f}_{1:3.2f}_GeVc2".format(fit_min, fit_max));
+                                outlist_fit_range.SetOwner(True);
+                                outlist_func.Add(outlist_fit_range);
+                                for iint in range(0, len(list_integral_min)):
+                                    integral_sigma_min = list_integral_min[iint];
+                                    integral_sigma_max = list_integral_max[iint];
+                                    ana_pi0.set_integral_range(integral_sigma_min, integral_sigma_max);
+                                    outlist_int_range = ana_pi0.analyze_ptspectrum();
+                                    outlist_int_range.SetName("integral_{0:2.1f}_{1:2.1f}_sigma".format(integral_sigma_min, integral_sigma_max));
+                                    #outlist_int_range.SetOwner(True);
+                                    outlist_fit_range.Add(outlist_int_range);
                 outfile.WriteTObject(outlist_ss);
                 outlist_ss.Clear();
+            del ana_pi0;
+        outfile.Close();
     else:
         print("please check what to do in",args.config);
 
-    outfile.Close();
     rootfile.Close();
 #_________________________________________________________________________________________
 ismc = False;
