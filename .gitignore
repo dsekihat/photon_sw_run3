@@ -2,5 +2,8 @@
 *.pdf
 *.png
 *.root
+*.d
+*.so
+*.pcm
 __pycache__/*
 
