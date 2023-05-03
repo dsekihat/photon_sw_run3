@@ -2,5 +2,6 @@
 *.pdf
 *.png
 *.root
+slide*/
 __pycache__/*
 

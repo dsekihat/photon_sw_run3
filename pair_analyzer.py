@@ -134,9 +134,14 @@ class PairAnalyzer:
             h1same = slice_histogram(h2same, pt1, pt2, "X", False);
             h1same.SetName("h1mgg_same_pt{0}".format(i));
             h1same.SetTitle("m_{{#gamma#gamma}}^{{same}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
+            bw = h1same.GetBinWidth(1);
+            h1same.SetXTitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+            h1same.SetYTitle("counts / {0:d} MeV/#it{{c}}^{{2}}".format(int(bw*1e+3)));
             h1mix  = slice_histogram(h2mix , pt1, pt2, "X", False);
-            h1mix.SetTitle("m_{{#gamma#gamma}}^{{mix}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
             h1mix.SetName("h1mgg_mix_pt{0}".format(i));
+            h1mix.SetTitle("m_{{#gamma#gamma}}^{{mix}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
+            h1mix.SetXTitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+            h1mix.SetYTitle("counts / {0:d} MeV/#it{{c}}^{{2}}".format(int(bw*1e+3)));
             h1same.SetDirectory(0);
             h1mix .SetDirectory(0);
     
@@ -150,6 +155,8 @@ class PairAnalyzer:
             h1ratio = get_ratio(h1same, h1mix);
             h1ratio.SetName("h1mgg_ratio_pt{0}".format(i));
             h1ratio.SetTitle("m_{{#gamma#gamma}}^{{ratio}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
+            h1ratio.SetXTitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+            h1ratio.SetYTitle("counts / {0:d} MeV/#it{{c}}^{{2}}".format(int(bw*1e+3)));
             h1ratio .SetDirectory(0);
    
             height = 1.0;
@@ -190,11 +197,15 @@ class PairAnalyzer:
             h1bkg.Multiply(f1bkg);
             h1bkg.SetName("h1mgg_bkg_pt{0}".format(i));
             h1bkg.SetTitle("m_{{#gamma#gamma}}^{{bkg}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
+            h1bkg.SetXTitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+            h1bkg.SetYTitle("counts / {0:d} MeV/#it{{c}}^{{2}}".format(int(bw*1e+3)));
             h1bkg .SetDirectory(0);
     
             h1sig = get_bkg_subtracted(h1same, h1bkg);
             h1sig.SetName("h1mgg_sig_pt{0}".format(i));
             h1sig.SetTitle("m_{{#gamma#gamma}}^{{sig}}, {0:2.1f} < #it{{p}}_{{T,#gamma#gamma}} < {1:2.1f} GeV/#it{{c}}".format(pt1, pt2));
+            h1sig.SetXTitle("#it{m}_{#gamma#gamma} (GeV/#it{c}^{2})");
+            h1sig.SetYTitle("counts / {0:d} MeV/#it{{c}}^{{2}}".format(int(bw*1e+3)));
             h1sig .SetDirectory(0);
     
             f1sig = self.f1sig.Clone("f1sig_pt{0}".format(i));
@@ -212,6 +223,7 @@ class PairAnalyzer:
             f1sig.SetParLimits(1, mean_init - 3 * sigma_init, mean_init + 3 * sigma_init);
             f1sig.SetParLimits(2, 0.5 * sigma_init, 2 * sigma_init);
             f1sig.FixParameter(3,0.6);
+            #f1sig.SetParLimits(3,0, 100);
             f1sig.SetParLimits(4,0, 100);
             h1sig.Fit(f1sig,"SME","",self.fit_min, self.fit_max);
     
