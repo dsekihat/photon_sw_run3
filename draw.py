@@ -1858,10 +1858,12 @@ def draw_mgg_eta(filename, subsystem, period, cutname, pt_id=3, suffix=""):
     h1same.Draw("E0same");
     h1bkg. Draw("E0same");
     h1sig. Draw("E0same");
-    f1sig = h1sig.GetFunction("f1sig_pt{0}".format(pt_id));
+    h1sig.GetFunction("f1sig").Delete();
+    f1sig = list_ss_cut_fit_range_int.FindObject("f1sig_pt{0}".format(pt_id));
     f1sig.SetLineColor(kRed+1);
     f1sig.SetLineWidth(2);
     f1sig.SetNpx(1000);
+    f1sig.Draw("same");
 
     subsystem_tmp = "";
     if subsystem == "PCMPCM":
@@ -2116,10 +2118,14 @@ def draw_mgg_pi0(filename, subsystem, period, cutname, pt_id=3, suffix=""):
     make_common_style(h1bkg   , 24, 1.2, kBlue+1, 2, 0);
     make_common_style(h1sig   , 21, 1.2, kRed+1, 2, 0);
 
-    f1sig = h1sig.GetFunction("f1sig_pt{0}".format(pt_id));
+    h1sig.GetFunction("f1sig").Delete();
+    f1sig = list_ss_cut_fit_range_int.FindObject("f1sig_pt{0}".format(pt_id));
     f1sig.SetLineColor(kRed+1);
     f1sig.SetLineWidth(2);
     f1sig.SetNpx(1000);
+    f1sig.Draw("same");
+
+
     #height = f1sig.GetParameter(0);
     #f1sig.SetParameter(0, height * 2);
     #h1sig.Scale(2);
@@ -4756,8 +4762,9 @@ if __name__ == "__main__":
     period_data = "LHC22o";
     period_mc = "LHC24b1";
     draw_mgg_pi0("pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240410.root"       , "PCMPCM", "LHC22o" , "qc_qc", 0, "");
-    compare_pi0_peak(filename_data, filename_mc, period_data, period_mc, ssname, cutname);
-    draw_cross_section_pi0(filename_data, filename_mc, period_data, ssname, cutname);
+    #compare_pi0_peak(filename_data, filename_mc, period_data, period_mc, ssname, cutname);
+    #draw_cross_section_pi0(filename_data, filename_mc, period_data, ssname, cutname);
+
     ssname = "PCMDalitzEE";
     cutname = "qc_mee0_60_minpt100_maxeta09_tpconly_lowB";
     period_data = "LHC22o";
@@ -4776,8 +4783,8 @@ if __name__ == "__main__":
     period_data = "LHC22o";
     period_mc = "LHC24b1";
     draw_mgg_eta("eta_data_ptspectrum_pp_13.6TeV_LHC22o_20240410.root"       , "PCMPCM", "LHC22o" , "qc_qc", 0, "");
-    compare_eta_peak(filename_data_eta, filename_mc_eta, period_data, period_mc, ssname, cutname);
-    draw_cross_section_eta(filename_data_eta, filename_mc_eta, period_data, ssname, cutname);
+    #compare_eta_peak(filename_data_eta, filename_mc_eta, period_data, period_mc, ssname, cutname);
+    #draw_cross_section_eta(filename_data_eta, filename_mc_eta, period_data, ssname, cutname);
 
     filename_pi0_xsection = "output_pi0_cross_section.root";
     filename_eta_xsection = "output_eta_cross_section.root";
