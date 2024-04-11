@@ -4219,45 +4219,6 @@ def draw_cross_section_pi0(filename_data, filename_mc, period, ssname, cutname):
     h1iy.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})");
     h1iy.GetYaxis().SetTitle("#it{E} #frac{d^{3}#it{#sigma}}{d#it{p}^{3}} (mb GeV^{#minus2} #it{c}^{3})");
 
-
-    #for inclusive photon
-    filename_photon_data = "photon_data_ptspectrum_pp_13.6TeV_LHC22q_V0withAnyTrack_xsection.root";
-    filename_photon_mc   = "photon_mc_ptspectrum_pp_13.6TeV_LHC23d10_V0withAnyTrack_xsection.root";
-
-    rootfile_photon_data = TFile.Open(filename_photon_data, "READ");
-    list_photon_data = rootfile_photon_data.Get("PCM");
-    list_photon_data_cut = list_photon_data.FindObject("analysis_wo_mee");
-    h1yield_photon = list_photon_data_cut.FindObject("h1yield");
-    h1yield_photon.SetDirectory(0);
-    ROOT.SetOwnership(h1yield_photon, False);
-
-    rootfile_photon_mc   = TFile.Open(filename_photon_mc  , "READ");
-    list_photon_mc = rootfile_photon_mc.Get("PCM");
-    list_photon_mc_cut = list_photon_mc.FindObject("analysis_wo_mee");
-    h1eff_photon = list_photon_mc_cut.FindObject("h1eff");
-    h1eff_photon.SetDirectory(0);
-    ROOT.SetOwnership(h1eff_photon, False);
-    h1purity_photon = list_photon_mc_cut.FindObject("h1purity");
-
-    h1iy_photon = h1yield_photon.Clone("h1iy_photon");
-    h1iy_photon.Reset();
-    h1iy_photon.Sumw2();
-    h1iy_photon.Divide(h1yield_photon, h1eff_photon, 1., 1., "G");
-    for i in range(0, h1iy.GetNbinsX()):
-        n     = h1iy_photon.GetBinContent(i+1);
-        n_err = h1iy_photon.GetBinError(i+1);
-        pt    = h1iy_photon.GetBinCenter(i+1);
-        h1iy_photon.SetBinContent(i+1, n/pt);
-        h1iy_photon.SetBinError(i+1, n_err/pt);
-    h1iy_photon.Multiply(h1purity_photon);
-    h1iy_photon.Scale(0.97); #feed down
-    h1iy_photon.Scale(1/TMath.TwoPi());
-    h1iy_photon.Scale(1/1.8);
-    h1iy_photon.Scale(59.4); #TVX trigger cross section in mb
-    h1iy_photon.SetDirectory(0);
-    ROOT.SetOwnership(h1iy_photon,False);
-    make_common_style(h1iy_photon, 20, 1.0, kBlue+1, 1, 0);
-
     outfile = TFile("output_pi0_cross_section.root","RECREATE");
     outfile.WriteTObject(h1yield);
     outfile.WriteTObject(h1eff);
