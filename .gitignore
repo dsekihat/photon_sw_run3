@@ -2,6 +2,9 @@
 *.pdf
 *.png
 *.root
+*.d
+*.so
+*.pcm
 slide*/
 __pycache__/*
 

@@ -1,0 +1,29 @@
+common:
+    system : "pp"
+    energy : 13.6 #center-of-mass energy in TeV
+    particle : "photon" 
+    period : "LHC22q"
+    do_3d_kt: True
+    do_qinv_kt: False
+    #kt_bin: [0.2,0.3,0.4,0.5,0.6,0.7,0.8, 0.9,1] #in GeV
+    kt_bin: [0.2,0.4,0.6,0.8, 1.0] #in GeV
+    #kt_bin: [0.2,1.0] #in GeV
+    fit_max: [0.04, 0.06, 0.08]
+data:
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "analysis_analysis"
+          - "analysis_wo_mee_analysis_wo_mee"
+        - name: "PCMPHOS"
+          cutnames:
+          - "analysis_test03"
+          - "analysis_wo_mee_test03"
+#        - name: "PHOSPHOS"
+#          cutnames:
+#          - "test03_test03"
+mc:
+    cutnames:
+    - "cutname0_mc"
+    - "cutname1_mc"
+

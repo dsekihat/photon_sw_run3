@@ -1,0 +1,27 @@
+common:
+    system : "pp"
+    energy : 13.6 #center-of-mass energy in TeV
+    particle : "eta" 
+    period : "LHC23d10_1"
+    do_ptspectrum: True
+    pt_bin: [1.0,  2, 4.0] #in GeV
+    fit_sig: ["cb"]
+    fit_bkg: ["pol1", "pol2"]
+    fit_min: [0.4]
+    fit_max: [0.7]
+    integral_sigma_min: [-3.0]
+    integral_sigma_max: [+3.0]
+data:
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "analysis_analysis"
+          - "analysis_wo_mee_analysis_wo_mee"
+          - "qc_qc"
+mc:
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "analysis_analysis"
+          - "analysis_wo_mee_analysis_wo_mee"
+          - "qc_qc"

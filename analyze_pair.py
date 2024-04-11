@@ -65,7 +65,6 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
     h1n.SetXTitle("#it{p}_{T} (GeV/#it{c})");
     h1n.SetYTitle("n of CB");
 
-
     for i in range(0, npt-1):
         pt1 = arr_pt[i];
         pt2 = arr_pt[i+1];
@@ -78,6 +77,7 @@ def analyze_ptspectrum(rootfile, ssname, cutname, arr_pt):
         h1mix.SetName("h1mgg_mix_pt{0}".format(i));
         h1same.SetDirectory(0);
         h1mix .SetDirectory(0);
+
 
         npair_same = h1same.GetEntries();
         npair_mix  = h1mix.GetEntries();
