@@ -1,0 +1,29 @@
+common:
+    system : "pp"
+    energy : 13.6 #center-of-mass energy in TeV
+    particle : "eta" 
+    period : "LHC22o"
+    do_ptspectrum: True
+    pt_bin: [1.0, 2.0, 3, 4, 8] #in GeV
+    fit_sig: ["cb"]
+    fit_bkg: ["pol1", "pol2"]
+    fit_min: [0.35, 0.40]
+    fit_max: [0.75, 0.70]
+    integral_sigma_min: [-3.0]
+    integral_sigma_max: [+3.0]
+data:
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "qc_qc"
+        - name: "PCMDalitzEE"
+          cutnames:
+          - "qc_mee0_60_minpt100_maxeta09_tpconly_lowB"
+mc:
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "qc_qc"
+        - name: "PCMDalitzEE"
+          cutnames:
+          - "qc_mee0_60_minpt100_maxeta09_tpconly_lowB"

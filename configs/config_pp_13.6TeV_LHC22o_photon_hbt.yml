@@ -1,0 +1,19 @@
+common:
+    system : "pp"
+    energy : 13.6 #center-of-mass energy in TeV
+    particle : "photon" 
+    period : "LHC22o"
+    do_3d_kt: False
+    do_qinv_kt: True
+    kt_bin: [0.3, 0.6, 1.0] #in GeV
+    fit_max: [0.04, 0.06, 0.08]
+data:
+    subsystems: 
+        - name: "PCMDalitzEE"
+          cutnames:
+          - "qc_mee_all_tpchadrejortofreq_prompt"
+mc:
+    cutnames:
+    - "cutname0_mc"
+    - "cutname1_mc"
+

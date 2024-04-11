@@ -1,0 +1,30 @@
+common:
+    system : "PbPb"
+    energy : 5.36 #center-of-mass energy in TeV
+    particle : "pi0" 
+    period : "LHC23zzh"
+    do_ptspectrum: True
+    pt_bin: [0.6, 0.8, 1, 1.2, 10] #in GeV for LKB
+    fit_sig: ["cb"]
+    fit_bkg: ["pol1"]
+    fit_min: [0.04, 0.06]
+    fit_max: [0.24, 0.22]
+    integral_sigma_min: [-3.0]
+    integral_sigma_max: [+3.0]
+data:
+    subsystems: 
+        - name: "PCMPCM"
+          cutnames:
+          - "qc_qc"
+          - "qc_ITSTPC_qc_ITSTPC"
+#          - "qc_ITSonly_ITSonly"
+#          - "qc_TPConly_TPConly"
+#        - name: "PCMDalitz"
+#          cutnames:
+#          - "qc_mee_0_120_tpchadrejortofreq"
+#          - "qc_ITSTPC_mee_0_120_tpchadrejortofreq"
+mc:
+    cutnames:
+    - "cutname0_mc"
+    - "cutname1_mc"
+

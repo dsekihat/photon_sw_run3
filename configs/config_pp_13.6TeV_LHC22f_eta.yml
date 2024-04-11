@@ -1,9 +1,16 @@
 common:
     system : "pp"
     energy : 13.6 #center-of-mass energy in TeV
+    particle : "eta"
     period : "LHC22f"
     do_ptspectrum: True
-    pt_bin: [0.4,0.6,0.8, 0.9,1,1.2, 1.4, 1.6, 1.8,2,2.5,3,4,5,6,8,10] #in GeV for LHC22f
+    pt_bin: [0.6,1.0,2.0,4,12] #in GeV for LKB
+    fit_sig: ["cb"]
+    fit_bkg: ["pol1"]
+    fit_min: [0.40]
+    fit_max: [0.70]
+    integral_sigma_min: [-3.0]
+    integral_sigma_max: [+3.0]
 data:
     subsystems: 
         - name: "PCMPCM"
@@ -11,11 +18,13 @@ data:
           - "analysis_analysis"
           - "analysis_wo_mee_analysis_wo_mee"
           - "qc_qc"
-          - "nocut_nocut"
         - name: "PHOSPHOS"
           cutnames:
           - "test03_test03"
           - "test05_test05"
+        - name: "EMCEMC"
+          cutnames:
+          - "standard_standard"
         - name: "PCMPHOS"
           cutnames:
           - "analysis_test03"
@@ -24,6 +33,11 @@ data:
           - "analysis_test05"
           - "analysis_wo_mee_test05"
           - "qc_test05"
+        - name: "PCMEMC"
+          cutnames:
+          - "analysis_standard"
+          - "analysis_wo_mee_standard"
+          - "qc_standard"
 mc:
     cutnames:
     - "cutname0_mc"

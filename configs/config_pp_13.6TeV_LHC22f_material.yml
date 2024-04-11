@@ -1,0 +1,24 @@
+common:
+    system : "pp"
+    energy : 13.6 #center-of-mass energy in TeV
+    period : "LHC22f"
+    period_mc : "LHC23d1k" #anchored MC
+    rxy_bin: [1, 7, 16, 20,25,30,35,40,45,50,55,60,65,70,75,80, 85, 90,100,200] #in cm
+    eta_bin: [-0.9, 0, +0.9]
+    #eta_bin: [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0]
+    pt_tag: [0, 1, 2, 10] # in GeV/c
+    pt_probe: [0.1, 2.0] # in GeV/c
+    #pt_probe: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2,3,4,5,6,7,8,9,10.0] # in GeV/c
+    #pt_probe: [0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0, 2] # in GeV/c
+data:
+    subsystems: 
+        - name: "PCMPCM"
+          tagnames: ["qc"]
+          probenames:
+          - ["wwire_ib", "qc"]
+mc:
+    subsystems: 
+        - name: "PCMPCM"
+          tagnames: ["qc"]
+          probenames:
+          - ["wwire_ib", "qc"]

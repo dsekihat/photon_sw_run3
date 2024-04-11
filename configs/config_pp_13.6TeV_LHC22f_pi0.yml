@@ -1,14 +1,13 @@
 common:
     system : "pp"
     energy : 13.6 #center-of-mass energy in TeV
-    meson : "pi0" 
-    period : "LHC22m"
+    particle : "pi0" 
+    period : "LHC22f"
     do_ptspectrum: True
-    pt_bin: [0.4,0.5,0.6,0.7,0.8, 0.9,1,1.2, 1.4, 1.6, 1.8,2,2.5,3,3.5,4,4.5,5,6,7,8,9,10,12] #in GeV
-    #pt_bin: [0.6,0.8,1,1.5, 2.0, 2.5,3,4,6,8,12] #in GeV
-    #pt_bin: [0.6, 0.8, 1.0, 1.5, 2, 3.0, 5] #in GeV only for LKB
+    pt_bin: [0.4,0.5, 0.6,0.8,1.0,1.5,2.0,3,4,5,6,8,12] #in GeV
+    #pt_bin: [0.6,0.8,1.0,1.5, 2.0,4,12] #in GeV for LKB
     fit_sig: ["cb"]
-    fit_bkg: ["pol1", "pol2"]
+    fit_bkg: ["pol1"]
     fit_min: [0.04]
     fit_max: [0.24]
     integral_sigma_min: [-3.0]
@@ -18,28 +17,26 @@ data:
         - name: "PCMPCM"
           cutnames:
           - "analysis_analysis"
-          - "analysis_wo_mee_analysis_wo_mee"
           - "qc_qc"
-          - "nocut_nocut"
 #        - name: "PHOSPHOS"
 #          cutnames:
 #          - "test03_test03"
 #          - "test05_test05"
+#        - name: "EMCEMC"
+#          cutnames:
+#          - "standard_standard"
 #        - name: "PCMPHOS"
 #          cutnames:
 #          - "analysis_test03"
-#          - "analysis_wo_mee_test03"
 #          - "qc_test03"
 #          - "analysis_test05"
-#          - "analysis_wo_mee_test05"
 #          - "qc_test05"
 #        - name: "PCMEMC"
 #          cutnames:
 #          - "analysis_standard"
-#          - "analysis_wo_mee_standard"
 #          - "qc_standard"
-#          - "nocut_standard"
 mc:
     cutnames:
     - "cutname0_mc"
     - "cutname1_mc"
+

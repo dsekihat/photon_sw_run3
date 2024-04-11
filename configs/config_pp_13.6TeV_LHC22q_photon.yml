@@ -1,0 +1,22 @@
+common:
+    system : "pp"
+    energy : 13.6 #center-of-mass energy in TeV
+    particle : "photon" 
+    period : "LHC22q"
+    do_ptspectrum: True
+    pt_bin: [0.1, 0.2,0.3,0.4,0.5,0.6,0.7,0.8, 0.9,1,1.2, 1.4, 1.6, 1.8,2,2.2,2.4,2.6,2.8,3,3.5,4,4.5,5,6,8,10] #in GeV
+data:
+    subsystems: 
+        - name: "PCM"
+          cutnames:
+          - "analysis"
+          - "analysis1690"
+          - "qc"
+          - "qc_ITSTPC"
+          - "qc_ITSonly"
+          - "qc_TPConly"
+mc:
+    cutnames:
+    - "cutname0_mc"
+    - "cutname1_mc"
+

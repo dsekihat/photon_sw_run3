@@ -27,6 +27,12 @@ void generate()
   TString filename = "~/alice/AliPhysics/PWG/Cocktail/parametrisations/pp_13TeV.root";
   TFile *rootfile = TFile::Open(filename, "READ");
   TDirectory *dir = (TDirectory*)rootfile->Get("13TeV_Comb");
+  TF1 *f1pt_111 = new TF1("f1","TMath::TwoPi() * x * [0] * pow(1 + x/[1], -[2])",0,10)
+  f1pt_111->FixParameter(0);
+  f1pt_111->FixParameter(1);
+  f1pt_111->FixParameter(2);
+
+
   TF1 *f1pt_111 = (TF1*)dir->Get("111_pt"); //d2N/dpT/dy
   TF1 *f1pt_221 = (TF1*)dir->Get("221_pt"); //d2N/dpT/dy
   f1pt_111->SetNpx(1000);

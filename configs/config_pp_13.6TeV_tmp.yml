@@ -2,15 +2,13 @@ common:
     system : "pp"
     energy : 13.6 #center-of-mass energy in TeV
     meson : "pi0" 
-    period : "LHC22m"
+    period : "LHC22q"
     do_ptspectrum: True
-    pt_bin: [0.4,0.5,0.6,0.7,0.8, 0.9,1,1.2, 1.4, 1.6, 1.8,2,2.5,3,3.5,4,4.5,5,6,7,8,9,10,12] #in GeV
-    #pt_bin: [0.6,0.8,1,1.5, 2.0, 2.5,3,4,6,8,12] #in GeV
-    #pt_bin: [0.6, 0.8, 1.0, 1.5, 2, 3.0, 5] #in GeV only for LKB
+    pt_bin: [1.0, 10.0] #in GeV
     fit_sig: ["cb"]
-    fit_bkg: ["pol1", "pol2"]
-    fit_min: [0.04]
-    fit_max: [0.24]
+    fit_bkg: ["pol1"]
+    fit_min: [0.06]
+    fit_max: [0.22]
     integral_sigma_min: [-3.0]
     integral_sigma_max: [+3.0]
 data:
@@ -33,12 +31,6 @@ data:
 #          - "analysis_test05"
 #          - "analysis_wo_mee_test05"
 #          - "qc_test05"
-#        - name: "PCMEMC"
-#          cutnames:
-#          - "analysis_standard"
-#          - "analysis_wo_mee_standard"
-#          - "qc_standard"
-#          - "nocut_standard"
 mc:
     cutnames:
     - "cutname0_mc"
