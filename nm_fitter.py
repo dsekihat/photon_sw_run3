@@ -42,28 +42,28 @@ class NMFitter:
             self.f1total.SetParameter(3, cb_alpha);
             self.f1total.SetParameter(4, cb_n);
             self.f1total.SetParameter(5, 1.0);
-            self.f1total.SetParameter(6, -1.0);
-            if is_cb_n_fixed:
-                self.f1sig.FixParameter(4, cb_n);
-                self.f1total.FixParameter(4, cb_n);
+            self.f1total.SetParameter(6, 0.0);
             if is_cb_alpha_fixed:
                 self.f1sig.FixParameter(3, cb_alpha);
                 self.f1total.FixParameter(3, cb_alpha);
+            if is_cb_n_fixed:
+                self.f1sig.FixParameter(4, cb_n);
+                self.f1total.FixParameter(4, cb_n);
         self.f1total.SetParLimits(0, 1e-3, 1e+6);
-        self.f1sig  .SetParLimits(0,    1, 1e+6);
+        self.f1sig  .SetParLimits(0,    0, 1e+6);
         self.f1total.SetParLimits(1, mean * 0.7, mean*1.5);
         self.f1sig.  SetParLimits(1, mean * 0.7, mean*1.5);
         self.f1total.SetParLimits(2, sigma * 0.2, sigma*5.0);
         self.f1sig.  SetParLimits(2, sigma * 0.2, sigma*5.0);
 
-    def fit_same_only(self, opt1, opt2, fitmin, fitmax):
+    def fit_same_only(self, opt, gopt, fitmin, fitmax):
         self.h1sig = self.h1same.Clone("h1sig");
-        fitresult = self.h1sig.Fit(self.f1sig, opt1, opt2, fitmin, fitmax);
+        fitresult = self.h1sig.Fit(self.f1sig, opt, gopt, fitmin, fitmax);
         return [fitresult, self.h1sig, None, None, self.f1sig, None, None];
 
-    def fit(self, opt1, opt2, fitmin, fitmax):
+    def fit(self, opt, gopt, fitmin, fitmax):
         if self.h1mix is None:
-            return self.fit_same_only(opt1, opt2, fitmin, fitmax);
+            return self.fit_same_only(opt, gopt, fitmin, fitmax);
 
         self.h1ratio = self.h1same.Clone("h1ratio");
         self.h1ratio.Reset();
@@ -73,7 +73,7 @@ class NMFitter:
         height = self.h1ratio.GetBinContent(bin_mean) - 1.0;
 
         self.f1total.SetParameter(0, height);
-        self.h1ratio.Fit(self.f1total, opt1, opt2, fitmin, fitmax);
+        self.h1ratio.Fit(self.f1total, opt, gopt, fitmin, fitmax);
 
         self.h1bkg = self.h1mix.Clone("h1bkg");
         npar_sig = self.f1sig.GetNpar();
@@ -87,6 +87,6 @@ class NMFitter:
         height = self.h1sig.GetBinContent(bin_mean);
         self.f1sig.SetParameter(0, height);
 
-        fitresult = self.h1sig.Fit(self.f1sig, opt1, opt2, fitmin, fitmax);
+        fitresult = self.h1sig.Fit(self.f1sig, opt, gopt, fitmin, fitmax);
         return [fitresult, self.h1sig, self.h1bkg, self.h1ratio, self.f1sig, self.f1bkg, self.f1total]
 

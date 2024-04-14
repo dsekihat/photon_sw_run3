@@ -186,14 +186,14 @@ class PairAnalyzer:
             sigma_init = 0.008;
             if "pi0" in self.particle:
                 mean_init = 0.132;
-                sigma = 0.005;
+                sigma_init = 0.005;
             elif "eta" in self.particle:
-                mean_init = 0.548;
-                sigma_init = 0.012;
+                mean_init = 0.545;
+                sigma_init = 0.008;
 
             nmf = NMFitter(h1same, h1mix_scaled, self.sig_name, self.bkg_name); 
             nmf.set_parameters(mean_init, sigma_init, self.cb_alpha, self.cb_n, self.is_cb_alpha_fixed, self.is_cb_n_fixed);
-            fit_result = nmf.fit("SME", "", self.fit_min, self.fit_max);
+            fit_result = nmf.fit("SME", "SME", "", self.fit_min, self.fit_max);
             h1sig = fit_result[1];
             h1bkg = fit_result[2];
             h1ratio = fit_result[3];
@@ -332,11 +332,11 @@ class PairAnalyzer:
             mean_init = 0.130;
             sigma_init = 0.008;
             if "pi0" in self.particle:
-                mean_init = 0.135;
-                sigma = 0.008;
+                mean_init = 0.132;
+                sigma_init = 0.005;
             elif "eta" in self.particle:
-                mean_init = 0.548;
-                sigma_init = 0.012;
+                mean_init = 0.545;
+                sigma_init = 0.008;
             bin_mean = h1same.FindBin(mean_init);
             height   = h1same.GetBinContent(bin_mean);
             h1sig = h1same.Clone("h1mgg_pi0_pt{0}".format(i));
@@ -362,7 +362,7 @@ class PairAnalyzer:
             #f1sig.FixParameter(4,10.0);
             #f1sig.SetParLimits(3,0, 100);
             #f1sig.SetParLimits(4,0, 100);
-            h1sig.Fit(f1sig,"SMEL","",self.fit_min, self.fit_max);
+            h1sig.Fit(f1sig,"SME","",self.fit_min, self.fit_max);
     
             mean      = f1sig.GetParameter(1);
             mean_err  = f1sig.GetParError(1);
@@ -505,8 +505,8 @@ class PairAnalyzer:
             h1acc = h1dndpt_acc.Clone("h1acc");
             h1acc.Sumw2();
             h1acc.Reset();
-            h1acc.SetTitle("acceptance");
-            h1acc.SetYTitle("acceptance");
+            h1acc.SetTitle("br. #times acceptance");
+            h1acc.SetYTitle("br. #times acceptance");
             h1acc.Reset();
             h1acc.Divide(h1dndpt_acc, h1dndpt, 1., 1., "B");
             outlist.Add(h1acc);
@@ -524,7 +524,7 @@ class PairAnalyzer:
             h1eff.Sumw2();
             h1eff.Reset();
             h1eff.SetTitle("efficiency");
-            h1eff.SetYTitle("acc. #times rec. efficiency");
+            h1eff.SetYTitle("br. #times acc. #times rec. efficiency");
             h1eff.Reset();
             h1eff.Divide(h1yield, h1dndpt, 1., 1., "B");
             outlist.Add(h1eff);

@@ -2232,7 +2232,7 @@ def draw_raw_yield_run2(subsystem, period, cutname, suffix=""):
     ROOT.SetOwnership(h1_eta_run2, False);
 
 
-    rootfile_pi0_run3 = TFile.Open("pi0_data_ptspectrum_pp_13.6TeV_{0}_20240410.root".format(period),"READ");
+    rootfile_pi0_run3 = TFile.Open("pi0_data_ptspectrum_pp_13.6TeV_{0}_20240413.root".format(period),"READ");
     list_pi0_run3 = rootfile_pi0_run3.Get(subsystem);
     list_pi0_run3_cut               = list_pi0_run3  .FindObject(cutname);
     list_pi0_run3_cut_fit           = list_pi0_run3_cut  .FindObject("cb_pol1");
@@ -2242,10 +2242,10 @@ def draw_raw_yield_run2(subsystem, period, cutname, suffix=""):
     h1_pi0_run3.SetDirectory(0);
     ROOT.SetOwnership(h1_pi0_run3, False);
 
-    rootfile_eta_run3 = TFile.Open("eta_data_ptspectrum_pp_13.6TeV_{0}_20240410.root".format(period),"READ");
+    rootfile_eta_run3 = TFile.Open("eta_data_ptspectrum_pp_13.6TeV_{0}_20240413.root".format(period),"READ");
     list_eta_run3 = rootfile_eta_run3.Get(subsystem);
     list_eta_run3_cut               = list_eta_run3  .FindObject(cutname);
-    list_eta_run3_cut_fit           = list_eta_run3_cut  .FindObject("cb_pol2");
+    list_eta_run3_cut_fit           = list_eta_run3_cut  .FindObject("cb_pol1");
     list_eta_run3_cut_fit_range     = list_eta_run3_cut_fit  .FindObject("fit_0.40_0.70_GeVc2");
     list_eta_run3_cut_fit_range_int = list_eta_run3_cut_fit_range  .FindObject("integral_-3.0_3.0_sigma");
     h1_eta_run3   = list_eta_run3_cut_fit_range_int.FindObject("h1yield");
@@ -3250,7 +3250,7 @@ def compare_eta_peak(filename_data, filename_mc, period_data, period_mc, ssname,
     rootfile_run3_data = TFile.Open(filename_data, "READ");
     list_run3_data_ss     = rootfile_run3_data.Get(ssname);
     list_run3_data_ss_cut = list_run3_data_ss.FindObject(cutname);
-    list_run3_data_ss_cut_fit           = list_run3_data_ss_cut  .FindObject("cb_pol2");
+    list_run3_data_ss_cut_fit           = list_run3_data_ss_cut  .FindObject("cb_pol1");
     list_run3_data_ss_cut_fit_range     = list_run3_data_ss_cut_fit  .FindObject("fit_0.40_0.70_GeVc2");
     list_run3_data_ss_cut_fit_range_int = list_run3_data_ss_cut_fit_range  .FindObject("integral_-3.0_3.0_sigma");
     h1mean_data = list_run3_data_ss_cut_fit_range_int.FindObject("h1mean");
@@ -3263,7 +3263,7 @@ def compare_eta_peak(filename_data, filename_mc, period_data, period_mc, ssname,
     rootfile_run3_mc   = TFile.Open(filename_mc  , "READ");
     list_run3_mc_ss     = rootfile_run3_mc.Get(ssname);
     list_run3_mc_ss_cut = list_run3_mc_ss.FindObject(cutname);
-    list_run3_mc_ss_cut_fit           = list_run3_mc_ss_cut  .FindObject("cb_pol2");
+    list_run3_mc_ss_cut_fit           = list_run3_mc_ss_cut  .FindObject("cb_pol1");
     list_run3_mc_ss_cut_fit_range     = list_run3_mc_ss_cut_fit  .FindObject("fit_0.40_0.70_GeVc2");
     list_run3_mc_ss_cut_fit_range_int = list_run3_mc_ss_cut_fit_range  .FindObject("integral_-3.0_3.0_sigma");
     h1mean_mc = list_run3_mc_ss_cut_fit_range_int.FindObject("h1mean");
@@ -3785,7 +3785,7 @@ def draw_efficiency(filename_mc_pi0, filename_mc_eta, period, ssname, cutname):
     c1.SetLogy(1);
     frame1 = c1.DrawFrame(0.4,1e-8, 10, 0.1);
     frame1.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})");
-    frame1.GetYaxis().SetTitle("acc. #times rec. efficiency");
+    frame1.GetYaxis().SetTitle("br. #times acc. #times rec. efficiency");
     frame1.GetXaxis().SetTitleOffset(1.2);
     frame1.GetYaxis().SetTitleOffset(1.4);
     frame1.GetXaxis().SetTitleSize(0.04);
@@ -4716,45 +4716,44 @@ if __name__ == "__main__":
     #compare_pi0_peak("pi0_data_ptspectrum_pp_13.6TeV_LHC23d1f_V0withAnyTrack_20230828_nsw1.root", "pi0_mc_ptspectrum_pp_13.6TeV_LHC23d1f_V0withAnyTrack_20230828_nsw1.root", "PCMPCM", "analysis_analysis");
     #compare_pi0_peak_rate("pi0_data_ptspectrum_pp_13.6TeV_LHC22q_V0withAnyTrack_20230828_nsw1.root", "pi0_data_ptspectrum_pp_13.6TeV_LHC22o_V0withAnyTrack_20230828_nsw1.root", "PCMPCM", "analysis_analysis");
 
-    filename_data = "pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240410.root";
-    filename_mc   = "pi0_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240410_TPCPIDNN.root";
+    filename_data = "pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240413.root";
+    filename_mc   = "pi0_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240413.root";
     ssname = "PCMPCM";
     cutname = "qc_qc";
     period_data = "LHC22o";
     period_mc = "LHC24b1";
-    draw_mgg_pi0("pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240410.root"       , "PCMPCM", "LHC22o" , "qc_qc", 0, "");
+    draw_mgg_pi0("pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240413.root"       , "PCMPCM", "LHC22o" , "qc_qc", 0, "");
     compare_pi0_peak(filename_data, filename_mc, period_data, period_mc, ssname, cutname);
     draw_cross_section_pi0(filename_data, filename_mc, period_data, ssname, cutname);
 
-    ssname = "PCMDalitzEE";
-    cutname = "qc_mee0_60_minpt100_maxeta09_tpconly_lowB";
-    period_data = "LHC22o";
-    period_mc = "LHC24b1";
-    #draw_mgg_pi0("pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240401.root"       , ssname, period_data, cutname, 1, "");
+    #ssname = "PCMDalitzEE";
+    #cutname = "qc_mee0_60_minpt100_maxeta09_tpconly_lowB";
+    #period_data = "LHC22o";
+    #period_mc = "LHC24b1";
+    #draw_mgg_pi0("pi0_data_ptspectrum_pp_13.6TeV_LHC22o_20240413.root"       , ssname, period_data, cutname, 1, "");
     #compare_pi0_peak(filename_data, filename_mc, period_data, period_mc, ssname, cutname);
     #draw_cross_section_pi0(filename_data, filename_mc, period_data, ssname, cutname);
 
+    draw_raw_yield_run2("PCMPCM", "LHC22o", "qc_qc");
 
-    #draw_raw_yield_run2("PCMPCM", "LHC22o", "qc_qc");
-
-    filename_data_eta = "eta_data_ptspectrum_pp_13.6TeV_LHC22o_20240410.root";
-    filename_mc_eta   = "eta_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240410_TPCPIDNN.root";
+    filename_data_eta = "eta_data_ptspectrum_pp_13.6TeV_LHC22o_20240413.root";
+    filename_mc_eta   = "eta_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240413.root";
     ssname = "PCMPCM";
     cutname = "qc_qc";
     period_data = "LHC22o";
     period_mc = "LHC24b1";
-    draw_mgg_eta("eta_data_ptspectrum_pp_13.6TeV_LHC22o_20240410.root"       , "PCMPCM", "LHC22o" , "qc_qc", 0, "");
+    draw_mgg_eta("eta_data_ptspectrum_pp_13.6TeV_LHC22o_20240413.root"       , "PCMPCM", "LHC22o" , "qc_qc", 0, "");
     compare_eta_peak(filename_data_eta, filename_mc_eta, period_data, period_mc, ssname, cutname);
     draw_cross_section_eta(filename_data_eta, filename_mc_eta, period_data, ssname, cutname);
 
     filename_pi0_xsection = "output_pi0_cross_section.root";
     filename_eta_xsection = "output_eta_cross_section.root";
-    #draw_eta_to_pi0_ratio(filename_pi0_xsection, filename_eta_xsection);
+    draw_eta_to_pi0_ratio(filename_pi0_xsection, filename_eta_xsection);
 
-    filename_mc_pi0 = "pi0_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240410_TPCPIDNN.root";
-    filename_mc_eta = "eta_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240410_TPCPIDNN.root";
+    filename_mc_pi0 = "pi0_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240413.root";
+    filename_mc_eta = "eta_mc_ptspectrum_pp_13.6TeV_LHC24b1_20240413.root";
     period = "LHC24b1";
-    #draw_efficiency(filename_mc_pi0, filename_mc_eta, period, "PCMPCM", "qc_qc");
+    draw_efficiency(filename_mc_pi0, filename_mc_eta, period, "PCMPCM", "qc_qc");
 
     #draw_mgg_pi0_pbpb("pi0_data_ptspectrum_PbPb_5.36TeV_LHC22s_V0withAnyTrack.root"         , "PCMPCM", "LHC22s", "analysis_analysis", 0, "AnyTrack");
     #draw_mgg_pi0_pbpb("pi0_data_ptspectrum_PbPb_5.36TeV_LHC22s_V0withAnyTrack_KF_PV_M0.root", "PCMPCM", "LHC22s", "analysis_analysis", 0, "KF_AnyTrack");
@@ -4782,6 +4781,9 @@ if __name__ == "__main__":
     #draw_cross_section_pi0_pbpb(filename_data, filename_mc, "PCMPCM", "qc_qc");
     #compare_pi0_peak_pbpb(filename_data, filename_mc, "PCMPCM", "qc_qc");
 
+    #draw_photon_conversion_probability("AnalysisResults_HL_197593.root", "LHC24b1", "");
+    #draw_photon_conversion_rec_efficiency("AnalysisResults_HL_197593.root", "qc", "LHC24b1", "");
+    #draw_photon_conversion_rec_efficiency_rxy("AnalysisResults_HL_197593.root", "qc", "LHC24b1", "");
     #draw_photon_conversion_probability("AnalysisResults_HL_195792.root", "LHC24b1", "_TPCPIDNN");
     #draw_photon_conversion_rec_efficiency("AnalysisResults_HL_195792.root", "qc", "LHC24b1", "_TPCPIDNN");
     #draw_photon_conversion_rec_efficiency_rxy("AnalysisResults_HL_195792.root", "qc", "LHC24b1", "_TPCPIDNN");

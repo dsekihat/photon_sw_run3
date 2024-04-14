@@ -41,12 +41,19 @@
 
 ####for LHC22o
 
-python run_nm.py -i AnalysisResults_HL_195791.root -c configs/config_pp_13.6TeV_LHC22o_pi0.yml -t data -s _20240410;
-python run_nm.py -i AnalysisResults_HL_195791.root -c configs/config_pp_13.6TeV_LHC22o_eta.yml -t data -s _20240410;
-python run_nm.py -i AnalysisResults_HL_195792.root -c configs/config_pp_13.6TeV_LHC24b1_eta.yml -t mc -s _20240410_TPCPIDNN;
-python run_nm.py -i AnalysisResults_HL_195792.root -c configs/config_pp_13.6TeV_LHC24b1_pi0.yml -t mc -s _20240410_TPCPIDNN;
+python run_nm.py -i AnalysisResults_HL_197579.root -c configs/config_pp_13.6TeV_LHC22o_pi0.yml -t data -s _20240413;
+python run_nm.py -i AnalysisResults_HL_197579.root -c configs/config_pp_13.6TeV_LHC22o_eta.yml -t data -s _20240413;
+python run_nm.py -i AnalysisResults_HL_197593.root -c configs/config_pp_13.6TeV_LHC24b1_pi0.yml -t mc -s _20240413;
+python run_nm.py -i AnalysisResults_HL_197593.root -c configs/config_pp_13.6TeV_LHC24b1_eta.yml -t mc -s _20240413;
+python run_tagging_pi0.py -i AnalysisResults_HL_197579.root -t data -c configs/config_pp_13.6TeV_LHC22o_tagging_pi0.yml -s _20240413;
+python run_tagging_pi0.py -i AnalysisResults_HL_197593.root -t mc -c configs/config_pp_13.6TeV_LHC24b1_tagging_pi0.yml -s _20240413;
+
+#python run_nm.py -i AnalysisResults_HL_195791.root -c configs/config_pp_13.6TeV_LHC22o_pi0.yml -t data -s _20240410;
+#python run_nm.py -i AnalysisResults_HL_195791.root -c configs/config_pp_13.6TeV_LHC22o_eta.yml -t data -s _20240410;
 #python run_nm.py -i AnalysisResults_HL_196011.root -c configs/config_pp_13.6TeV_LHC24b1_eta.yml -t mc -s _20240410_TPCPID;
 #python run_nm.py -i AnalysisResults_HL_196011.root -c configs/config_pp_13.6TeV_LHC24b1_pi0.yml -t mc -s _20240410_TPCPID;
+#python run_nm.py -i AnalysisResults_HL_195792.root -c configs/config_pp_13.6TeV_LHC24b1_eta.yml -t mc -s _20240410_TPCPIDNN;
+#python run_nm.py -i AnalysisResults_HL_195792.root -c configs/config_pp_13.6TeV_LHC24b1_pi0.yml -t mc -s _20240410_TPCPIDNN;
 #python run_tagging_pi0.py -i AnalysisResults_HL_195791.root -t data -c configs/config_pp_13.6TeV_LHC22o_tagging_pi0.yml -s _20240410;
 #python run_tagging_pi0.py -i AnalysisResults_HL_195792.root -t mc -c configs/config_pp_13.6TeV_LHC24b1_tagging_pi0.yml -s _20240410_TPCPIDNN;
 #python run_tagging_pi0.py -i AnalysisResults_HL_196011.root -t mc -c configs/config_pp_13.6TeV_LHC24b1_tagging_pi0.yml -s _20240410_TPCPID;
